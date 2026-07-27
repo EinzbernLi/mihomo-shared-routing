@@ -30,6 +30,7 @@ function main(config) {
   config['rule-providers'] = providers;
 
   const sharedRules = [
+    'DOMAIN-SUFFIX,dmgh.cc,DIRECT',
     'RULE-SET,shared_ads,REJECT',
     'RULE-SET,shared_cn_domain,DIRECT',
     'RULE-SET,shared_cn_ip,DIRECT,no-resolve',
