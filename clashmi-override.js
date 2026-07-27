@@ -3,6 +3,14 @@
 function main(config) {
   const providers = config['rule-providers'] || {};
 
+  providers.shared_direct_domains = {
+    type: 'http',
+    behavior: 'domain',
+    format: 'yaml',
+    interval: 86400,
+    path: './ruleset/shared_direct_domains.yaml',
+    url: 'https://raw.githubusercontent.com/EinzbernLi/mihomo-shared-routing/main/rules/direct-domains.yaml',
+  };
   providers.shared_cn_domain = {
     type: 'http',
     behavior: 'domain',
@@ -30,7 +38,7 @@ function main(config) {
   config['rule-providers'] = providers;
 
   const sharedRules = [
-    'DOMAIN-SUFFIX,dmgh.cc,DIRECT',
+    'RULE-SET,shared_direct_domains,DIRECT',
     'RULE-SET,shared_ads,REJECT',
     'RULE-SET,shared_cn_domain,DIRECT',
     'RULE-SET,shared_cn_ip,DIRECT,no-resolve',
