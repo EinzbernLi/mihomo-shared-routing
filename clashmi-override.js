@@ -38,6 +38,8 @@ function main(config) {
   config['rule-providers'] = providers;
 
   const sharedRules = [
+    // Fallback: apply immediately even before the remote custom list refreshes.
+    'DOMAIN-SUFFIX,dmgh.cc,DIRECT',
     'RULE-SET,shared_direct_domains,DIRECT',
     'RULE-SET,shared_ads,REJECT',
     'RULE-SET,shared_cn_domain,DIRECT',
