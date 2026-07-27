@@ -1,0 +1,3 @@
+# Custom direct domains shared by desktop and Android.
+payload:
+  - '+.dmgh.cc'
