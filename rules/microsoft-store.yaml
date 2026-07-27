@@ -1,0 +1,10 @@
+payload:
+  - DOMAIN,storeedgefd.dsx.mp.microsoft.com
+  - DOMAIN,storeedge.microsoft.com
+  - DOMAIN,displaycatalog.mp.microsoft.com
+  - DOMAIN,purchase.mp.microsoft.com
+  - DOMAIN,licensing.mp.microsoft.com
+  - DOMAIN,dl.delivery.mp.microsoft.com
+  - DOMAIN,store-images.s-microsoft.com
+  - DOMAIN,download.microsoft.com
+  - DOMAIN,da.xboxservices.com
