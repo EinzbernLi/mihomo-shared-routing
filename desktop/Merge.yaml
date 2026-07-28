@@ -10,6 +10,14 @@ rule-providers:
     proxy: GLOBAL
     path: ./ruleset/shared_direct_domains.yaml
     url: https://raw.githubusercontent.com/EinzbernLi/mihomo-shared-routing/main/rules/direct-domains.yaml
+  shared_custom_ads:
+    type: http
+    behavior: classical
+    format: yaml
+    interval: 86400
+    proxy: GLOBAL
+    path: ./ruleset/shared_custom_ads.yaml
+    url: https://raw.githubusercontent.com/EinzbernLi/mihomo-shared-routing/main/rules/custom-ads.yaml
   shared_ms_store:
     type: http
     behavior: classical
