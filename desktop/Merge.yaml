@@ -1,0 +1,44 @@
+# Shared rule providers for Clash Verge Rev.
+profile:
+  store-selected: true
+rule-providers:
+  shared_direct_domains:
+    type: http
+    behavior: domain
+    format: yaml
+    interval: 86400
+    proxy: GLOBAL
+    path: ./ruleset/shared_direct_domains.yaml
+    url: https://raw.githubusercontent.com/EinzbernLi/mihomo-shared-routing/main/rules/direct-domains.yaml
+  shared_ms_store:
+    type: http
+    behavior: classical
+    format: yaml
+    interval: 86400
+    proxy: GLOBAL
+    path: ./ruleset/shared_ms_store.yaml
+    url: https://raw.githubusercontent.com/EinzbernLi/mihomo-shared-routing/main/rules/microsoft-store.yaml
+  shared_cn_domain:
+    type: http
+    behavior: domain
+    format: mrs
+    interval: 86400
+    proxy: GLOBAL
+    path: ./ruleset/shared_cn_domain.mrs
+    url: https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/cn.mrs
+  shared_cn_ip:
+    type: http
+    behavior: ipcidr
+    format: mrs
+    interval: 86400
+    proxy: GLOBAL
+    path: ./ruleset/shared_cn_ip.mrs
+    url: https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geoip/cn.mrs
+  shared_ads:
+    type: http
+    behavior: domain
+    format: mrs
+    interval: 86400
+    proxy: GLOBAL
+    path: ./ruleset/shared_ads.mrs
+    url: https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/category-ads-all.mrs
