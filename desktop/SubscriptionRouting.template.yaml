@@ -2,6 +2,7 @@
 # Before use, replace BOTH occurrences of YOUR_FINAL_PROXY_GROUP with the
 # policy group from the subscription's final MATCH rule. Do not create a group.
 prepend:
+  - RULE-SET,shared_xbox_services,YOUR_FINAL_PROXY_GROUP
   - RULE-SET,shared_direct_domains,DIRECT
   - RULE-SET,shared_ms_store,DIRECT
   - RULE-SET,shared_ads,REJECT

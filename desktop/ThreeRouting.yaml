@@ -1,5 +1,6 @@
 # Three routing: keep subscription-specific rules before national fallback.
 prepend:
+  - RULE-SET,shared_xbox_services,三毛机场
   - RULE-SET,shared_direct_domains,DIRECT
   - RULE-SET,shared_ms_store,DIRECT
   - RULE-SET,shared_ads,REJECT

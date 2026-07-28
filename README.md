@@ -4,7 +4,8 @@
 
 ## 包含什么
 
-- `rules/microsoft-store.yaml`：微软商店、Xbox 授权与下载域名直连
+- `rules/microsoft-store.yaml`：微软商店域名直连
+- `rules/xbox-services.yaml`：Xbox 服务域名走订阅的最终代理策略组
 - `rules/direct-domains.yaml`：个人补充直连域名（当前为动漫共和国 `dmgh.cc`）
 - MetaCubeX 数据集：中国大陆域名和 IP 直连、广告域名拦截
 - `clashmi-override.js`：Android 的自动覆写脚本
@@ -15,7 +16,7 @@
 
 ## 路由顺序
 
-1. 自建直连（微软商店、动漫共和国）
+1. Xbox 服务代理；自建直连（微软商店、动漫共和国）
 2. 广告域名拦截
 3. 机场订阅自带的专属规则和策略组
 4. 中国大陆域名 / IP 直连兜底
@@ -63,7 +64,8 @@ CheckNetIsolation LoopbackExempt -a -n=Microsoft.WindowsStore_8wekyb3d8bbwe
 ## 自定义规则维护
 
 - 给某个网站直连：在 `rules/direct-domains.yaml` 的 `payload` 中添加 `+.example.com`。
-- 给新的微软相关域名直连：添加到 `rules/microsoft-store.yaml`，格式为 `DOMAIN,hostname`。
+- 给新的微软商店域名直连：添加到 `rules/microsoft-store.yaml`，格式为 `DOMAIN,hostname`。
+- 给新的 Xbox 服务域名：添加到 `rules/xbox-services.yaml`，格式为 `DOMAIN-SUFFIX,example.xbox.com`；该规则会优先走订阅的最终代理策略组。
 - 提交到 `main` 分支后，已配置客户端将在下一次更新（最长约 24 小时）加载。
 
 修改后应先检查 YAML 缩进与格式。规则文件写错会导致对应规则提供者无法更新，但不会包含或暴露订阅信息。
