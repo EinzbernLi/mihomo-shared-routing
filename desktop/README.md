@@ -1,43 +1,39 @@
-# Clash Verge Rev 电脑端：
+# Clash Verge Rev 电脑端：通用导入流程
 
-这些是“覆写模板”，不是机场订阅。先保留并更新原机场订阅，再按照下方两部分配置。
+这些文件是“覆写模板”，不是机场订阅。先导入并更新你自己的机场订阅，再完成下方两部分配置。流程不依赖任何特定机场或策略组名称。
 
-## 第 1 部分：所有订阅共用的规则提供者
+## 第 1 部分：配置所有订阅共用的规则提供者
 
-这一步只做一次。它让电脑从本仓库下载微软直连、自定义直连等规则文件。
+这一步只做一次。它让电脑自动下载本仓库中的微软直连、自定义直连规则，以及国内/广告规则数据。
 
 1. 在 Clash Verge Rev 左侧打开 **订阅** 页面，进入 **全局扩展覆写配置**。
 2. 浏览器打开 [Merge.yaml Raw 文件](https://raw.githubusercontent.com/EinzbernLi/mihomo-shared-routing/main/desktop/Merge.yaml)，复制全部内容。
-3. 回到“全局扩展覆写配置”，全选编辑器内容并替换为刚复制的完整内容。
-4. 点击 **保存**，然后重启 Clash Verge Rev。
+3. 回到“全局扩展覆写配置”，全选编辑器内容，粘贴刚复制的完整内容。
+4. 点击 **保存**，重启 Clash Verge Rev。
 
-此页面中只能保留 `profile:` 与 `rule-providers:`；**不要添加顶层 `rules:`**。全局扩展覆写中的 `rules:` 会整体覆盖机场规则，导致分流异常。
+此页面只能保留 `profile:` 与 `rule-providers:`；**不要添加顶层 `rules:`**。全局扩展覆写中的 `rules:` 会整体覆盖机场原有规则，导致分流异常。
 
-## 第 2 部分：为每个机场绑定规则覆写
+## 第 2 部分：为每个订阅配置通用规则覆写
 
-这一步每个机场只做一次。它决定规则顺序：自建直连 → 广告拦截 → 机场专属规则 → 国内兜底 → 机场最终代理。
+这一步每个机场订阅只做一次。规则的最终顺序是：
 
-### Glados
+`自建直连 → 广告拦截 → 机场专属规则 → 国内兜底 → 机场最终 MATCH`
 
-1. 在 **订阅** 页面找到 Glados 配置，右键或打开配置菜单。
+### 完整模式（含国内兜底）
+
+1. 在 **订阅** 页面找到要配置的订阅，右键或打开配置菜单。
 2. 选择 **编辑规则**，进入 **高级** YAML 编辑器。
-3. 打开 [GladosRouting.yaml Raw 文件](https://raw.githubusercontent.com/EinzbernLi/mihomo-shared-routing/main/desktop/GladosRouting.yaml)，复制全部内容。
-4. 在高级编辑器中全选、替换并保存。
-5. 更新 Glados 订阅后重连。
+3. 先记下该订阅原配置最后一条规则的策略组名称，即 `MATCH,策略组名称` 中逗号后的部分。例如最后一条是 `MATCH,自动选择`，就记下 `自动选择`。
+4. 打开 [SubscriptionRouting.template.yaml Raw 文件](https://raw.githubusercontent.com/EinzbernLi/mihomo-shared-routing/main/desktop/SubscriptionRouting.template.yaml)，复制全部内容。
+5. 将模板内两处 `YOUR_FINAL_PROXY_GROUP` 都替换为第 3 步记下的策略组名称。
+6. 在高级编辑器中全选、粘贴替换后的完整内容并保存。
+7. 更新该订阅后重连。
 
-### 三毛机场
+不要新建策略组；模板使用该订阅原本的最终策略组，因此不会改变你原有的节点选择方式。
 
-1. 在 **订阅** 页面找到三毛机场配置，右键或打开配置菜单。
-2. 选择 **编辑规则**，进入 **高级** YAML 编辑器。
-3. 打开 [ThreeRouting.yaml Raw 文件](https://raw.githubusercontent.com/EinzbernLi/mihomo-shared-routing/main/desktop/ThreeRouting.yaml)，复制全部内容。
-4. 在高级编辑器中全选、替换并保存。
-5. 更新三毛订阅后重连。
+### 安全模式（仅自建直连与广告拦截）
 
-### 其他机场
-
-可先使用 [SharedRouting.yaml Raw 文件](https://raw.githubusercontent.com/EinzbernLi/mihomo-shared-routing/main/desktop/SharedRouting.yaml)。它提供自建直连和广告拦截，但不调整该机场的最终 `MATCH`，因此不会破坏未知的策略组名称。
-
-若要给该机场也添加国内兜底，请复制 `ThreeRouting.yaml` 或 `GladosRouting.yaml` 作为起点，并将其中的 `MATCH,三毛机场` / `MATCH,Default Proxy` 改为该机场配置最后一条 `MATCH` 实际使用的策略组名称；不要新建策略组。
+如果暂时无法确认订阅最终 `MATCH` 的策略组名称，可使用 [SharedRouting.yaml Raw 文件](https://raw.githubusercontent.com/EinzbernLi/mihomo-shared-routing/main/desktop/SharedRouting.yaml)。它只加入自建直连和广告拦截，不调整该订阅的最终路由；稍后确认名称后，再切换至上面的完整模式。
 
 ## 验证
 
@@ -46,4 +42,8 @@
 3. 国内网站在没有机场专属规则命中时，应命中 `shared_cn_domain` 或 `shared_cn_ip`，使用 `DIRECT`。
 4. 广告域名应命中 `shared_ads` 并使用 `REJECT`。
 
-更新机制：自建规则、微软规则、国内规则和广告规则每 24 小时更新一次；机场节点和机场自带规则仍由原订阅更新。
+## 更新机制
+
+- 机场节点与机场自带规则：按原订阅自身的更新方式更新。
+- 自建直连、微软直连、国内规则、广告规则：每 24 小时更新一次。
+- 若更改了 `SubscriptionRouting.template.yaml` 的规则逻辑，需要在每个已配置订阅的高级规则编辑器中重新粘贴一次；普通规则数据更新无需重复操作。
