@@ -11,6 +11,14 @@ function main(config) {
     path: './ruleset/shared_direct_domains.yaml',
     url: 'https://raw.githubusercontent.com/EinzbernLi/mihomo-shared-routing/main/rules/direct-domains.yaml',
   };
+  providers.shared_custom_ads = {
+    type: 'http',
+    behavior: 'classical',
+    format: 'yaml',
+    interval: 86400,
+    path: './ruleset/shared_custom_ads.yaml',
+    url: 'https://raw.githubusercontent.com/EinzbernLi/mihomo-shared-routing/main/rules/custom-ads.yaml',
+  };
   providers.shared_cn_domain = {
     type: 'http',
     behavior: 'domain',
@@ -41,6 +49,9 @@ function main(config) {
     // Fallback: apply immediately even before the remote custom list refreshes.
     'DOMAIN-SUFFIX,dmgh.cc,DIRECT',
     'RULE-SET,shared_direct_domains,DIRECT',
+    // Temporary, exact ad candidate; do not block the wider zjjieapi.com domain.
+    'DOMAIN,tnc3-bjlgy.zjjieapi.com,REJECT',
+    'RULE-SET,shared_custom_ads,REJECT',
     'RULE-SET,shared_ads,REJECT',
   ];
   const nationalRules = [
