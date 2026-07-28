@@ -1,0 +1,7 @@
+# Explicit exceptions only; no subscription-specific final MATCH rule.
+prepend:
+  - RULE-SET,shared_direct_domains,DIRECT
+  - RULE-SET,shared_ms_store,DIRECT
+  - RULE-SET,shared_ads,REJECT
+append: []
+delete: []
