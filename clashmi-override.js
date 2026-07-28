@@ -11,14 +11,6 @@ function main(config) {
     path: './ruleset/shared_direct_domains.yaml',
     url: 'https://raw.githubusercontent.com/EinzbernLi/mihomo-shared-routing/main/rules/direct-domains.yaml',
   };
-  providers.shared_xbox_services = {
-    type: 'http',
-    behavior: 'classical',
-    format: 'yaml',
-    interval: 86400,
-    path: './ruleset/shared_xbox_services.yaml',
-    url: 'https://raw.githubusercontent.com/EinzbernLi/mihomo-shared-routing/main/rules/xbox-services.yaml',
-  };
   providers.shared_cn_domain = {
     type: 'http',
     behavior: 'domain',
@@ -45,17 +37,9 @@ function main(config) {
   };
   config['rule-providers'] = providers;
 
-  const subscriptionRules = config.rules || [];
-  const finalMatchRule = [...subscriptionRules].reverse().find(
-    (rule) => typeof rule === 'string' && rule.trim().startsWith('MATCH,'),
-  );
-  const fallbackGroup = finalMatchRule
-    ? finalMatchRule.trim().split(',').slice(-1)[0]
-    : 'GLOBAL';
   const fixedRules = [
     // Fallback: apply immediately even before the remote custom list refreshes.
     'DOMAIN-SUFFIX,dmgh.cc,DIRECT',
-    `RULE-SET,shared_xbox_services,${fallbackGroup}`,
     'RULE-SET,shared_direct_domains,DIRECT',
     'RULE-SET,shared_ads,REJECT',
   ];
@@ -63,6 +47,7 @@ function main(config) {
     'RULE-SET,shared_cn_domain,DIRECT',
     'RULE-SET,shared_cn_ip,DIRECT,no-resolve',
   ];
+  const subscriptionRules = config.rules || [];
   const matchIndex = subscriptionRules.findIndex(
     (rule) => typeof rule === 'string' && rule.trim().startsWith('MATCH,'),
   );

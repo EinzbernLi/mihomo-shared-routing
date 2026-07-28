@@ -18,14 +18,6 @@ rule-providers:
     proxy: GLOBAL
     path: ./ruleset/shared_ms_store.yaml
     url: https://raw.githubusercontent.com/EinzbernLi/mihomo-shared-routing/main/rules/microsoft-store.yaml
-  shared_xbox_services:
-    type: http
-    behavior: classical
-    format: yaml
-    interval: 86400
-    proxy: GLOBAL
-    path: ./ruleset/shared_xbox_services.yaml
-    url: https://raw.githubusercontent.com/EinzbernLi/mihomo-shared-routing/main/rules/xbox-services.yaml
   shared_cn_domain:
     type: http
     behavior: domain
