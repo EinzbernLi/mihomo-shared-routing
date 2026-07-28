@@ -45,7 +45,9 @@ FlClash 的 URL 导入用于完整机场配置，不能把这份 JS 覆写脚本
 
 ## 电脑端：Clash Verge Rev
 
-当前电脑已经配置完成。新电脑时：先导入机场订阅，再按 [desktop/README.md](desktop/README.md) 导入对应覆写模板。
+当前电脑已经配置完成。新电脑时：先导入机场订阅，再按 [desktop/README.md](desktop/README.md) 的逐步流程导入对应覆写模板。
+
+**不要**在“全局扩展覆写配置”中添加顶层 `rules:`。该页面的 `rules` 会整体替换机场订阅原有规则；全局配置只用于本仓库的 `profile` 与 `rule-providers`。
 
 微软商店在 Windows 上另需执行一次系统级“回环豁免”，否则它可能无法使用本机代理；这不是规则文件能代替的设置。可在 Clash Verge Rev 的工具/脚本中执行，或以管理员 PowerShell 运行：
 
