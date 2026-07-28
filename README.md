@@ -9,6 +9,7 @@
 - MetaCubeX 数据集：中国大陆域名和 IP 直连、广告域名拦截
 - `clashmi-override.js`：Android 的自动覆写脚本
 - `desktop/`：Clash Verge Rev 的电脑端覆写模板
+- 电脑端 Steam 域名直连，供 Watt、Steamcommunity_302 等本地加速工具接管
 
 规则数据每 24 小时更新一次。仓库中的两份自建规则更新后，Android 与已配置的电脑端会在下一次规则提供者更新时获取新版本。
 

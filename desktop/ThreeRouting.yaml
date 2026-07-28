@@ -1,5 +1,13 @@
 # Three routing: keep subscription-specific rules before national fallback.
 prepend:
+  # Let local Steam accelerators handle Steam traffic instead of this subscription.
+  - DOMAIN-SUFFIX,steampowered.com,DIRECT
+  - DOMAIN-SUFFIX,steamcommunity.com,DIRECT
+  - DOMAIN-SUFFIX,steamstatic.com,DIRECT
+  - DOMAIN-SUFFIX,steamusercontent.com,DIRECT
+  - DOMAIN-SUFFIX,steamcontent.com,DIRECT
+  - DOMAIN-SUFFIX,steam-chat.com,DIRECT
+  - DOMAIN-SUFFIX,steamserver.net,DIRECT
   - RULE-SET,shared_direct_domains,DIRECT
   - RULE-SET,shared_ms_store,DIRECT
   - RULE-SET,shared_ads,REJECT
