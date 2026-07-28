@@ -84,11 +84,16 @@ function Set-SteamRouting {
             throw "Clash routing profile not found: $profile"
         }
 
-        $content = Get-Content -Raw -LiteralPath $profile
+        # Subscription override files are UTF-8. Explicitly preserve that
+        # encoding so non-ASCII proxy group names are never corrupted.
+        $content = Get-Content -Raw -LiteralPath $profile -Encoding utf8
         $newLine = if ($content.Contains([Environment]::NewLine)) { [Environment]::NewLine } else { [string][char]10 }
         $block = [regex]::Replace($routingBlock, '\r?\n', $newLine)
         $blockPattern = [regex]'(?ms)^\s{2}# BEGIN Steam accelerator routing\r?\n.*?^\s{2}# END Steam accelerator routing\r?\n?'
-        $cleanContent = $blockPattern.Replace($content, '', 1)
+        # Migrate the older fixed Steam DIRECT block too. Clash Verge Rev may
+        # save these YAML entries with single quotes, so accept either form.
+        $legacyStaticBlockPattern = [regex]'(?ms)^(?:\s{2}# Let local Steam accelerators handle Steam traffic instead of this subscription\.\r?\n)?(?:\s{2}-\s+[''"]?DOMAIN-SUFFIX,(?:steampowered\.com|steamcommunity\.com|steamstatic\.com|steamusercontent\.com|steamcontent\.com|steam-chat\.com|steamserver\.net),DIRECT[''"]?\s*\r?\n){7}'
+        $cleanContent = $legacyStaticBlockPattern.Replace($blockPattern.Replace($content, '', 1), '', 1)
 
         if ($AcceleratorRunning) {
             $prependPattern = [regex]'(?m)^prepend:\r?\n'
