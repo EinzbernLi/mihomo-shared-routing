@@ -39,7 +39,9 @@ Clash Mi 的“规则提供者”页面只能添加规则数据，不能指定 `
 
 ## Android：FlClash
 
-保留原机场订阅，在该订阅的 **覆写 / 自定义配置** 中导入 `clashmi-override.js` 的 Raw 链接，并选择 JavaScript 覆写。保存后更新覆写并重连。
+保留原机场订阅。FlClash 的“脚本覆写”是本地脚本编辑器：新建脚本后，打开 `clashmi-override.js` 的 Raw 链接，复制全部内容并粘贴保存；再在机场订阅的覆写设置中绑定这个脚本。
+
+FlClash 的 URL 导入用于完整机场配置，不能把这份 JS 覆写脚本作为独立订阅导入。脚本本身只需首次粘贴一次；脚本引用的自建规则和 MetaCubeX 数据仍会每 24 小时自动更新。
 
 ## 电脑端：Clash Verge Rev
 
