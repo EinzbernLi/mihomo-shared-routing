@@ -37,14 +37,30 @@ function main(config) {
   };
   config['rule-providers'] = providers;
 
-  const sharedRules = [
+  const fixedRules = [
     // Fallback: apply immediately even before the remote custom list refreshes.
     'DOMAIN-SUFFIX,dmgh.cc,DIRECT',
     'RULE-SET,shared_direct_domains,DIRECT',
     'RULE-SET,shared_ads,REJECT',
+  ];
+  const nationalRules = [
     'RULE-SET,shared_cn_domain,DIRECT',
     'RULE-SET,shared_cn_ip,DIRECT,no-resolve',
   ];
-  config.rules = [...sharedRules, ...(config.rules || [])];
+  const subscriptionRules = config.rules || [];
+  const matchIndex = subscriptionRules.findIndex(
+    (rule) => typeof rule === 'string' && rule.trim().startsWith('MATCH,'),
+  );
+
+  // Keep service-specific subscription rules first; use national rules only
+  // as a fallback immediately before the subscription's final MATCH rule.
+  config.rules = matchIndex >= 0
+    ? [
+        ...fixedRules,
+        ...subscriptionRules.slice(0, matchIndex),
+        ...nationalRules,
+        ...subscriptionRules.slice(matchIndex),
+      ]
+    : [...fixedRules, ...subscriptionRules, ...nationalRules];
   return config;
 }
