@@ -2,6 +2,7 @@
 prepend:
   - RULE-SET,shared_direct_domains,DIRECT
   - RULE-SET,shared_ms_store,DIRECT
+  - RULE-SET,shared_custom_ads,REJECT
   - RULE-SET,shared_ads,REJECT
 append: []
 delete: []
