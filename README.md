@@ -67,3 +67,9 @@ CheckNetIsolation LoopbackExempt -a -n=Microsoft.WindowsStore_8wekyb3d8bbwe
 - 提交到 `main` 分支后，已配置客户端将在下一次更新（最长约 24 小时）加载。
 
 修改后应先检查 YAML 缩进与格式。规则文件写错会导致对应规则提供者无法更新，但不会包含或暴露订阅信息。
+
+## Windows Steam 本地加速自动切换
+
+桌面模板不再永久把 Steam 写成直连。若使用 Watt 或 Steamcommunity_302，并希望“任一加速服务运行时交给加速器、两者均停止时交回 Clash 订阅”，请使用 [desktop/steam-routing](desktop/steam-routing/README.md) 的后台监控脚本。
+
+该脚本目前**仅适配 Windows 版 Clash Verge Rev**；它会在每份订阅覆写的 prepend 顶部临时写入受控的 Steam 直连规则，并在加速服务停止后只删除该受控规则块；不使用 TUN，也不会在后台保留可见的 PowerShell 窗口。Clash Mi、FlClash 等客户端需要另行适配，不能直接使用该脚本。
