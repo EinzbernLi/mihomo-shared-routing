@@ -1,0 +1,4 @@
+# Deliberately narrow, user-verified ad candidates.
+# Remove an entry immediately if it affects normal app functionality.
+payload:
+  - DOMAIN,tnc3-bjlgy.zjjieapi.com
