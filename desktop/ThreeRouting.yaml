@@ -1,9 +1,5 @@
 # Three routing: keep subscription-specific rules before national fallback.
 prepend:
-  - DOMAIN-SUFFIX,xbox.com,三毛机场
-  - DOMAIN-SUFFIX,xboxlive.com,三毛机场
-  - DOMAIN-SUFFIX,xboxservices.com,三毛机场
-  - DOMAIN-SUFFIX,xboxab.com,三毛机场
   - RULE-SET,shared_xbox_services,三毛机场
   - RULE-SET,shared_direct_domains,DIRECT
   - RULE-SET,shared_ms_store,DIRECT

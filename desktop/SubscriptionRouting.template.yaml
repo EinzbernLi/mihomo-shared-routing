@@ -1,11 +1,7 @@
 # Generic subscription routing override for Clash Verge Rev.
-# Before use, replace EVERY occurrence of YOUR_FINAL_PROXY_GROUP with the
+# Before use, replace BOTH occurrences of YOUR_FINAL_PROXY_GROUP with the
 # policy group from the subscription's final MATCH rule. Do not create a group.
 prepend:
-  - DOMAIN-SUFFIX,xbox.com,YOUR_FINAL_PROXY_GROUP
-  - DOMAIN-SUFFIX,xboxlive.com,YOUR_FINAL_PROXY_GROUP
-  - DOMAIN-SUFFIX,xboxservices.com,YOUR_FINAL_PROXY_GROUP
-  - DOMAIN-SUFFIX,xboxab.com,YOUR_FINAL_PROXY_GROUP
   - RULE-SET,shared_xbox_services,YOUR_FINAL_PROXY_GROUP
   - RULE-SET,shared_direct_domains,DIRECT
   - RULE-SET,shared_ms_store,DIRECT

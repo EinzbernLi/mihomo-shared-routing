@@ -55,10 +55,6 @@ function main(config) {
   const fixedRules = [
     // Fallback: apply immediately even before the remote custom list refreshes.
     'DOMAIN-SUFFIX,dmgh.cc,DIRECT',
-    `DOMAIN-SUFFIX,xbox.com,${fallbackGroup}`,
-    `DOMAIN-SUFFIX,xboxlive.com,${fallbackGroup}`,
-    `DOMAIN-SUFFIX,xboxservices.com,${fallbackGroup}`,
-    `DOMAIN-SUFFIX,xboxab.com,${fallbackGroup}`,
     `RULE-SET,shared_xbox_services,${fallbackGroup}`,
     'RULE-SET,shared_direct_domains,DIRECT',
     'RULE-SET,shared_ads,REJECT',
