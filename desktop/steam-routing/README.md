@@ -1,61 +1,86 @@
-# Steam local accelerator automatic switching
+# Steam 本地加速自动切换
 
-> **Supported client: Clash Verge Rev on Windows only.** This watcher is
-> designed for Clash Verge Rev subscription override YAML files and its desktop
-> executable restart flow. It does not support Clash Mi, FlClash, or other
-> Mihomo clients without a separate adapter.
+> **适配范围：仅限 Windows 版 Clash Verge Rev。**
+> 本脚本按照 Clash Verge Rev 的订阅覆写 YAML 和桌面程序重启方式编写，不能直接用于 Clash Mi、FlClash 或其他 Mihomo 客户端；这些客户端需要各自的覆写与重载适配。
 
-This folder provides a no-TUN background watcher for Clash Verge Rev. It
-changes Steam routing automatically:
+本目录提供一个不使用 TUN 的隐藏后台监控。它检测 Watt 和 Steamcommunity_302 的实际加速服务状态，并自动改写 Clash Verge Rev 的订阅覆写规则。
 
-| Watt / Steamcommunity_302 state | Steam rules written | Traffic handler |
+| 本地加速状态 | 写入的 Steam 规则 | Steam 实际接管者 |
 | --- | --- | --- |
-| Either acceleration service is active | Seven DOMAIN-SUFFIX rules to DIRECT, at the start of prepend | Watt or Steamcommunity_302 |
-| Both services are inactive | Deletes the managed rule block | The subscription's Steam rules / Clash |
+| Watt 或 Steamcommunity_302 任一正在加速 | 在 prepend 顶部写入 7 条 Steam 直连规则 | 本地加速软件 |
+| 两者都未加速 | 删除这段受控规则 | 原订阅规则 / Clash |
 
-The watcher edits every configured subscription override file directly. It does
-not require Clash to be running. If Clash is already running and restart is
-enabled, the script restarts it after a rule change; otherwise the changes apply
-the next time Clash starts.
+监控直接改写每个订阅的“高级 YAML 覆写”文件，因此**不依赖 Clash 是否已启动**。若 Clash 已在运行且配置开启自动重启，规则变更后会重启 Clash Verge Rev 立即生效；若 Clash 未启动，下次启动时会直接读取已更新的规则。
 
-## Detection
+## 检测方式
 
-- Steamcommunity_302 is active only while steamcommunity_302.cli or
-  steamcommunity_302.caddy exists. Merely opening its GUI does not trigger.
-- Watt is active only while Steam++.Accelerator owns a configured local
-  HTTP/HTTPS listening port. A resident Watt UI does not trigger.
-- Defaults: check every three seconds and require two matching checks before
-  changing rules.
+- **Steamcommunity_302**：只有 steamcommunity_302.cli 或 steamcommunity_302.caddy 进程存在时，才视为加速已启动。单纯打开 302 的界面不会触发。
+- **Watt**：只有 Steam++.Accelerator 实际监听本地加速端口时，才视为加速已启动。Watt 主界面或常驻模块本身不会触发。
+- 默认每 3 秒检测一次，连续两次状态相同后才改规则，约 6 秒完成切换，以免服务启停瞬间反复重载。
 
-## Install
+## 使用前准备
 
-1. Configure each Clash Verge Rev subscription with the parent
-   desktop/README.md procedure. The templates do not permanently force Steam
-   to DIRECT.
-2. Copy this folder to a permanent local location.
-3. Copy SteamRoutingWatcher.config.example.psd1 to
-   SteamRoutingWatcher.config.psd1.
-4. Edit the copied configuration:
-   - Profiles: absolute paths of every subscription override YAML to switch.
-   - ClashExecutable: absolute path of clash-verge.exe. Leave empty if route
-     files should update only.
-   - RestartRunningClient: true restarts a running client after changes; false
-     leaves reloading to the user.
-5. Open an elevated PowerShell in this folder and test once:
+1. 先按上级 [desktop/README.md](../README.md) 的步骤，为每个机场订阅添加 Clash Verge Rev 覆写。
+2. 上级模板不会永久把 Steam 设为直连；Steam 动态规则只由本目录的监控脚本写入。
+3. 将本目录整体复制到一个不会移动或删除的本机位置，例如 D:\ClashTools\steam-routing。
 
-   ~~~powershell
-   powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\SteamRoutingWatcher.ps1 -Once
-   ~~~
+## 配置脚本
 
-6. After confirming the test, create a Task Scheduler task triggered at logon.
-   Set Program to wscript.exe and Arguments to the absolute path of
-   SteamRoutingWatcher.vbs. The VBS wrapper runs the watcher invisibly, without
-   a console window.
+1. 将 SteamRoutingWatcher.config.example.psd1 复制为 SteamRoutingWatcher.config.psd1。
+2. 用文本编辑器打开新文件，填写以下内容：
 
-## Managed rule block
+   - **Profiles**：所有需要一起切换的订阅覆写 YAML 的绝对路径。使用多个订阅时，每一份都要填入。
+   - **ClashExecutable**：Clash Verge Rev 的 clash-verge.exe 绝对路径。
+   - **RestartRunningClient**：设为 true 时，规则变化会重启当前正在运行的 Clash Verge Rev；设为 false 时只改规则文件，等下次手动启动 Clash 才生效。
+   - **WattProxyPorts**：Watt 实际加速端口，默认是 80 和 443。若 Watt 以后更新并改变端口，可在此调整。
+   - **LogPath**：留空会把日志写到脚本同目录的 SteamRoutingWatcher.log；也可填写任意可写入的绝对路径。
 
-When an accelerator starts, the watcher writes this at the beginning of each
-override's prepend section:
+示例：
+
+~~~powershell
+@{
+    Profiles = @(
+        'C:\Users\你的账号\AppData\Roaming\io.github.clash-verge-rev.clash-verge-rev\profiles\订阅一.yaml'
+        'C:\Users\你的账号\AppData\Roaming\io.github.clash-verge-rev.clash-verge-rev\profiles\订阅二.yaml'
+    )
+    ClashExecutable = 'E:\Clash\Clash Verge\clash-verge.exe'
+    RestartRunningClient = $true
+    PollSeconds = 3
+    StableSamples = 2
+    WattProcessName = 'Steam++.Accelerator'
+    WattProxyPorts = @(80, 443)
+    LogPath = ''
+}
+~~~
+
+## 首次测试
+
+使用“以管理员身份运行”的 PowerShell，进入脚本所在文件夹后执行：
+
+~~~powershell
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\SteamRoutingWatcher.ps1 -Once
+~~~
+
+该命令只执行一次当前状态检测并写入对应规则，适合确认路径和权限是否正确。测试时：
+
+- 开启 Watt 或 302，再执行一次，应写入 Steam 直连规则；
+- 两者都关闭，再执行一次，应删除该规则块并恢复订阅 Steam 规则。
+
+## 设置为登录后自动后台运行
+
+1. 打开 Windows 的“任务计划程序”，选择“创建任务”。
+2. 在“常规”中勾选“使用最高权限运行”。
+3. 在“触发器”中新增“登录时”触发。
+4. 在“操作”中新增操作：
+   - 程序或脚本：wscript.exe
+   - 添加参数：SteamRoutingWatcher.vbs 的绝对路径，并用英文双引号包住。
+5. 保存任务后手动运行一次任务确认。
+
+SteamRoutingWatcher.vbs 会以隐藏方式启动 PowerShell，因此不会出现或保留控制台窗口。不要关闭任务计划程序启动的后台任务；关闭它会停止自动切换。
+
+## 脚本写入的规则
+
+任一本地加速服务启动后，脚本会在每份订阅覆写的 prepend 最前方自动写入：
 
 ~~~yaml
 # BEGIN Steam accelerator routing
@@ -69,18 +94,20 @@ override's prepend section:
 # END Steam accelerator routing
 ~~~
 
-When both accelerators stop, it removes only this marked block. Do not edit
-lines between the markers manually.
+当 Watt 和 Steamcommunity_302 都停止时，脚本只删除上述带标记的规则块，不会改动机场订阅原本的 Steam 分流规则。请不要手动编辑标记之间的内容。
 
-## Logs
+## 日志与排查
 
-By default, SteamRoutingWatcher.log is created beside the script:
+默认日志文件是脚本同目录的 SteamRoutingWatcher.log。常见内容含义：
 
-- accelerator active: Watt; Steam DIRECT
-- accelerator active: Steamcommunity_302; Steam DIRECT
-- accelerator active: Watt, Steamcommunity_302; Steam DIRECT
-- no accelerator: Steam via Clash subscription rules
+- accelerator active: Watt; Steam DIRECT：Watt 已接管。
+- accelerator active: Steamcommunity_302; Steam DIRECT：302 已接管。
+- accelerator active: Watt, Steamcommunity_302; Steam DIRECT：两个加速服务同时运行。
+- no accelerator: Steam via Clash subscription rules：两个加速服务均已停止，Steam 已恢复由订阅规则处理。
 
-If a Watt update changes its listener ports, change WattProxyPorts in the local
-configuration. If Steamcommunity_302 changes its process names, update the
-matching expression in the script.
+若规则未立即生效，请依次检查：
+
+1. 配置中的 Profiles 是否指向当前正在使用的订阅覆写文件。
+2. 任务计划程序是否正在运行，且任务使用最高权限。
+3. Clash Verge Rev 是否已启动；若不希望自动重启，确认 RestartRunningClient 是否设为 false。
+4. 查看日志中是否识别出 Watt 或 Steamcommunity_302。
