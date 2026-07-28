@@ -1,0 +1,11 @@
+# Three routing: keep subscription-specific rules before national fallback.
+prepend:
+  - RULE-SET,shared_direct_domains,DIRECT
+  - RULE-SET,shared_ms_store,DIRECT
+  - RULE-SET,shared_ads,REJECT
+append:
+  - RULE-SET,shared_cn_domain,DIRECT
+  - RULE-SET,shared_cn_ip,DIRECT,no-resolve
+  - MATCH,三毛机场
+delete:
+  - MATCH,三毛机场
