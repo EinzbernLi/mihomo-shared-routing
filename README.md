@@ -4,7 +4,7 @@
 
 ## 包含什么
 
-- `rules/microsoft-store.yaml`：微软商店、Xbox 授权与下载域名直连
+- `rules/microsoft-store.yaml`：微软商店授权与下载域名直连
 - `rules/direct-domains.yaml`：个人补充直连域名（当前为动漫共和国 `dmgh.cc`）
 - MetaCubeX 数据集：中国大陆域名和 IP 直连、广告域名拦截
 - `clashmi-override.js`：Android 的自动覆写脚本
