@@ -33,7 +33,7 @@
 
 1. 先按上级 [desktop/README.md](../README.md) 的步骤，为每个机场订阅添加 Clash Verge Rev 覆写。
 2. 上级模板不会永久把 Steam 设为直连；Steam 动态规则只由本目录的监控脚本写入。
-3. 将本目录整体复制到一个不会移动或删除的本机位置，例如 D:\ClashTools\steam-routing。
+3. 将本目录整体复制到一个不会移动或删除的本机位置，例如 D:\ClashTools\local-accelerator-routing。
 
 ## 配置脚本
 
