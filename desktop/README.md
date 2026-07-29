@@ -46,8 +46,8 @@
 
 上述覆写模板不会固定 Steam 的路由。若安装了 Watt 或 Steamcommunity_302，可使用 [steam-routing/README.md](steam-routing/README.md) 中的后台监控。**该监控仅适配 Windows 版 Clash Verge Rev，不能直接用于 Clash Mi 或 FlClash。**
 
-- 任一加速服务实际运行时，自动在 prepend 顶部写入 Steam 的直连规则，让本地加速器接管。
-- 两者都停止时，自动删除该受控规则块，恢复订阅自己的 Steam 分流。
+- 302 正在运行时（即使 Watt 也在运行），自动在 prepend 顶部写入 Windows Hosts 中全部本机加速域名的直连规则，由 302 接管。
+- 302 停止且 Watt 正在运行时，同一批规则由 Watt 接管；两者都停止时，自动删除该受控规则块，恢复订阅自己的分流。
 - 不需要 TUN；通过隐藏的脚本宿主运行，不会出现常驻 PowerShell 窗口。
 
 ## 更新机制
