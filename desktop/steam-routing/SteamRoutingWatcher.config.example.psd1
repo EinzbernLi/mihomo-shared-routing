@@ -19,6 +19,14 @@
     WattProcessName = 'Steam++.Accelerator'
     WattProxyPorts = @(80, 443)
 
+    # Steamcommunity_302 is ready only when its CLI/Caddy process owns one of
+    # these local ports. The default covers its standard HTTP/HTTPS listeners.
+    Steam302ProxyPorts = @(80, 443)
+
+    # When an accelerator is ready, set dns.use-system-hosts in the Clash Verge
+    # Rev override so Mihomo resolves the accelerator's Windows hosts entries.
+    EnsureSystemHosts = $true
+
     # Optional. Leave empty to write SteamRoutingWatcher.log next to the script.
     LogPath = ''
 }

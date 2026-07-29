@@ -12,9 +12,24 @@
 
 监控直接改写每个订阅的“高级 YAML 覆写”文件，因此**不依赖 Clash 是否已启动**。若 Clash 已在运行且配置开启自动重启，规则变更后会重启 Clash Verge Rev 立即生效；若 Clash 未启动，下次启动时会直接读取已更新的规则。
 
+## Watt 与 302 的互斥保护
+
+Watt 和 Steamcommunity_302 都可能通过系统 Hosts 将 Steam 域名指向本机，并监听本机 80/443 端口。它们**不能可靠地同时接管同一批 Steam 域名**：当两者都在监听时，Windows 会将 `127.0.0.1` 的连接交给更具体的监听者，实际接管者不再由本脚本或用户界面可预测。
+
+因此脚本只会在**恰好一个**加速器确认就绪时写入 Steam `DIRECT` 规则：
+
+| 检测结果 | 脚本行为 |
+| --- | --- |
+| 仅 Watt 就绪 | 写入 Steam `DIRECT`；同时确保 Mihomo 使用系统 Hosts |
+| 仅 Steamcommunity_302 就绪 | 写入 Steam `DIRECT`；同时确保 Mihomo 使用系统 Hosts |
+| 两者都就绪 | 删除受控 Steam `DIRECT` 块，恢复订阅规则，并写入冲突日志 |
+| 两者都未就绪 | 删除受控 Steam `DIRECT` 块，恢复订阅规则 |
+
+日常使用时请只启用一个加速器。若需要切换，请先停止当前加速服务，待日志显示已恢复订阅规则后，再启动另一个服务。
+
 ## 检测方式
 
-- **Steamcommunity_302**：只有 steamcommunity_302.cli 或 steamcommunity_302.caddy 进程存在时，才视为加速已启动。单纯打开 302 的界面不会触发。
+- **Steamcommunity_302**：只有 steamcommunity_302.cli 或 steamcommunity_302.caddy 进程实际监听配置的本地加速端口时，才视为加速已启动。单纯打开 302 的界面不会触发。
 - **Watt**：只有 Steam++.Accelerator 实际监听本地加速端口时，才视为加速已启动。Watt 主界面或常驻模块本身不会触发。
 - 默认每 3 秒检测一次，连续两次状态相同后才改规则，约 6 秒完成切换，以免服务启停瞬间反复重载。
 
@@ -33,6 +48,8 @@
    - **ClashExecutable**：Clash Verge Rev 的 clash-verge.exe 绝对路径。
    - **RestartRunningClient**：设为 true 时，规则变化会重启当前正在运行的 Clash Verge Rev；设为 false 时只改规则文件，等下次手动启动 Clash 才生效。
    - **WattProxyPorts**：Watt 实际加速端口，默认是 80 和 443。若 Watt 以后更新并改变端口，可在此调整。
+   - **Steam302ProxyPorts**：302 实际加速端口，默认是 80 和 443。
+   - **EnsureSystemHosts**：默认 `true`。在单一加速器就绪时，覆写中会启用 Mihomo 的 `dns.use-system-hosts`，让 Clash 使用加速器写入的 Windows Hosts 记录，而不是直接解析到远端。
    - **LogPath**：留空会把日志写到脚本同目录的 SteamRoutingWatcher.log；也可填写任意可写入的绝对路径。
 
 示例：
@@ -49,6 +66,8 @@
     StableSamples = 2
     WattProcessName = 'Steam++.Accelerator'
     WattProxyPorts = @(80, 443)
+    Steam302ProxyPorts = @(80, 443)
+    EnsureSystemHosts = $true
     LogPath = ''
 }
 ~~~
@@ -63,7 +82,8 @@ powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\SteamRoutingWatcher.ps
 
 该命令只执行一次当前状态检测并写入对应规则，适合确认路径和权限是否正确。测试时：
 
-- 开启 Watt 或 302，再执行一次，应写入 Steam 直连规则；
+- 只开启 Watt 或只开启 302，再执行一次，应写入 Steam 直连规则；
+- 同时开启 Watt 与 302，再执行一次，应删除该规则块并在日志记录冲突；
 - 两者都关闭，再执行一次，应删除该规则块并恢复订阅 Steam 规则。
 
 ## 设置为登录后自动后台运行
@@ -102,7 +122,7 @@ SteamRoutingWatcher.vbs 会以隐藏方式启动 PowerShell，因此不会出现
 
 - accelerator active: Watt; Steam DIRECT：Watt 已接管。
 - accelerator active: Steamcommunity_302; Steam DIRECT：302 已接管。
-- accelerator active: Watt, Steamcommunity_302; Steam DIRECT：两个加速服务同时运行。
+- accelerator conflict: Watt and Steamcommunity_302 are both listening：两个加速服务同时运行，脚本已恢复订阅规则以避免流量误入其中一个。
 - no accelerator: Steam via Clash subscription rules：两个加速服务均已停止，Steam 已恢复由订阅规则处理。
 
 若规则未立即生效，请依次检查：
