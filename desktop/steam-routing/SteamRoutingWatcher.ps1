@@ -1,10 +1,14 @@
 [CmdletBinding()]
 param(
     [switch]$Once,
-    [string]$ConfigPath = (Join-Path $PSScriptRoot 'SteamRoutingWatcher.config.psd1')
+    [string]$ConfigPath
 )
 
 $ErrorActionPreference = 'Stop'
+
+if ([string]::IsNullOrWhiteSpace($ConfigPath)) {
+    $ConfigPath = Join-Path $PSScriptRoot 'SteamRoutingWatcher.config.psd1'
+}
 
 if (-not (Test-Path -LiteralPath $ConfigPath)) {
     throw "Config file not found: $ConfigPath. Copy SteamRoutingWatcher.config.example.psd1 first."
