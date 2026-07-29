@@ -42,9 +42,9 @@
 3. 国内网站在没有机场专属规则命中时，应命中 `shared_cn_domain` 或 `shared_cn_ip`，使用 `DIRECT`。
 4. 广告域名应命中 `shared_ads` 并使用 `REJECT`。
 
-## Steam 本地加速自动切换（可选）
+## 本地加速自动切换（可选）
 
-上述覆写模板不会固定 Steam 的路由。若安装了 Watt 或 Steamcommunity_302，可使用 [steam-routing/README.md](steam-routing/README.md) 中的后台监控。**该监控仅适配 Windows 版 Clash Verge Rev，不能直接用于 Clash Mi 或 FlClash。**
+上述覆写模板不会固定本地加速服务域名的路由。若安装了 Watt 或 Steamcommunity_302，可使用 [local-accelerator-routing/README.md](local-accelerator-routing/README.md) 中的后台监控。**该监控仅适配 Windows 版 Clash Verge Rev，不能直接用于 Clash Mi 或 FlClash。**
 
 - 302 正在运行时（即使 Watt 也在运行），自动在 prepend 顶部写入 Windows Hosts 中全部本机加速域名的直连规则，由 302 接管。
 - 302 停止且 Watt 正在运行时，同一批规则由 Watt 接管；两者都停止时，自动删除该受控规则块，恢复订阅自己的分流。
