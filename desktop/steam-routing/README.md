@@ -92,12 +92,11 @@ powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\SteamRoutingWatcher.ps
 2. 在“常规”中勾选“使用最高权限运行”。
 3. 在“触发器”中新增“登录时”触发。
 4. 在“操作”中新增操作：
-   - 程序或脚本：wscript.exe
-   - 添加参数：SteamRoutingWatcher.vbs 的绝对路径，并用英文双引号包住。
+   - 程序或脚本：powershell.exe
+   - 添加参数：`-NoProfile -ExecutionPolicy Bypass -WindowStyle Hidden -File "SteamRoutingWatcher.ps1 的绝对路径"`
 5. 保存任务后手动运行一次任务确认。
 
-SteamRoutingWatcher.vbs 会以隐藏方式启动 PowerShell，因此不会出现或保留控制台窗口。不要关闭任务计划程序启动的后台任务；关闭它会停止自动切换。
-
+任务计划程序会以隐藏方式运行 PowerShell，因此不会出现或保留控制台窗口。不要关闭任务计划程序启动的后台任务；关闭它会停止自动切换。
 ## 脚本写入的规则
 
 任一本地加速服务启动后，脚本会在每份订阅覆写的 prepend 最前方自动写入：
