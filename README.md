@@ -68,8 +68,8 @@ CheckNetIsolation LoopbackExempt -a -n=Microsoft.WindowsStore_8wekyb3d8bbwe
 
 修改后应先检查 YAML 缩进与格式。规则文件写错会导致对应规则提供者无法更新，但不会包含或暴露订阅信息。
 
-## Windows Steam 本地加速自动切换
+## Windows 本地加速自动切换
 
-桌面模板不再永久把 Steam 写成直连。若使用 Watt 或 Steamcommunity_302，并希望“302 运行时优先交给 302；仅 Watt 运行时交给 Watt；两者均停止时交回 Clash 订阅”，请使用 [desktop/steam-routing](desktop/steam-routing/README.md) 的后台监控脚本。
+桌面模板不再永久把本地加速服务域名写成直连。若使用 Watt 或 Steamcommunity_302，并希望“302 运行时优先交给 302；仅 Watt 运行时交给 Watt；两者均停止时交回 Clash 订阅”，请使用 [desktop/local-accelerator-routing](desktop/local-accelerator-routing/README.md) 的后台监控脚本。
 
 该脚本目前**仅适配 Windows 版 Clash Verge Rev**；它会从 Windows Hosts 自动读取两款加速器接管的全部本机域名，并在每份订阅覆写的 prepend 顶部临时写入受控直连规则；两者均停止后只删除该受控规则块。不使用 TUN，也不会在后台保留可见的 PowerShell 窗口。Clash Mi、FlClash 等客户端需要另行适配，不能直接使用该脚本。
