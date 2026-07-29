@@ -88,11 +88,11 @@ powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\LocalAcceleratorRoutin
 2. 在“常规”中勾选“使用最高权限运行”。
 3. 在“触发器”中新增“登录时”触发。
 4. 在“操作”中新增操作：
-   - 程序或脚本：powershell.exe
-   - 添加参数：`-NoProfile -ExecutionPolicy Bypass -WindowStyle Hidden -File "LocalAcceleratorRoutingWatcher.ps1 的绝对路径"`
+   - 程序或脚本：wscript.exe
+   - 添加参数：`"LocalAcceleratorRoutingWatcher.vbs 的绝对路径"`
 5. 保存任务后手动运行一次任务确认。
 
-任务计划程序会以隐藏方式运行 PowerShell，因此不会出现或保留控制台窗口。不要关闭任务计划程序启动的后台任务；关闭它会停止自动切换。
+`LocalAcceleratorRoutingWatcher.vbs` 会以隐藏方式启动 PowerShell，避免 Windows Terminal 或控制台宿主弹出空白窗口。不要关闭任务计划程序启动的后台任务；关闭它会停止自动切换。
 ## 脚本写入的规则
 
 任一本地加速服务就绪后，脚本从 Windows Hosts 中收集所有指向本机回环地址的域名，在每份订阅覆写的 `prepend` 顶部自动写入受控 `DOMAIN` / `DOMAIN-SUFFIX,DIRECT` 规则。该规则块同时覆盖 Steam、GitHub 和两款软件后续新增的 Hosts 加速服务。
