@@ -1,5 +1,7 @@
 # Steam 本地加速自动切换
 
+> **旧版留存目录。** 新部署请使用 [LocalAcceleratorRoutingWatcher](../local-accelerator-routing/README.md)。新版按 Hosts 动态生成规则，支持 DNS 状态恢复、实际监听检测和可选连接刷新。本目录脚本保留原行为；升级时先按新版 README 停止旧监控并迁移配置，不要让两套监控同时运行。
+
 > **适配范围：仅限 Windows 版 Clash Verge Rev。**
 > 本脚本按照 Clash Verge Rev 的订阅覆写 YAML 和桌面程序重启方式编写，不能直接用于 Clash Mi、FlClash 或其他 Mihomo 客户端；这些客户端需要各自的覆写与重载适配。
 

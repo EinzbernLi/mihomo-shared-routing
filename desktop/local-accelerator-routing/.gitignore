@@ -1,0 +1,7 @@
+LocalAcceleratorRoutingWatcher.config.psd1
+*.log
+*.tmp
+*.bak
+state.json
+backups/
+old-content/

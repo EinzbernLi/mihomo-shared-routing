@@ -9,7 +9,7 @@
 - MetaCubeX 数据集：中国大陆域名和 IP 直连、广告域名拦截
 - `clashmi-override.js`：Android 的自动覆写脚本
 - `desktop/`：Clash Verge Rev 的电脑端覆写模板
-- 电脑端 Steam 域名直连，供 Watt、Steamcommunity_302 等本地加速工具接管
+- 电脑端按 Windows Hosts 动态生成直连规则，供 Watt、Steamcommunity_302 等本地加速工具接管
 
 规则数据每 24 小时更新一次。仓库中的两份自建规则更新后，Android 与已配置的电脑端会在下一次规则提供者更新时获取新版本。
 
@@ -68,8 +68,10 @@ CheckNetIsolation LoopbackExempt -a -n=Microsoft.WindowsStore_8wekyb3d8bbwe
 
 修改后应先检查 YAML 缩进与格式。规则文件写错会导致对应规则提供者无法更新，但不会包含或暴露订阅信息。
 
-## Windows Steam 本地加速自动切换
+## Windows 本地加速自动切换
 
-桌面模板不再永久把 Steam 写成直连。若使用 Watt 或 Steamcommunity_302，并希望“任一加速服务运行时交给加速器、两者均停止时交回 Clash 订阅”，请使用 [desktop/steam-routing](desktop/steam-routing/README.md) 的后台监控脚本。
+桌面模板不会永久把加速域名写成直连。若使用 Watt 或 Steamcommunity_302，请使用 [desktop/local-accelerator-routing](desktop/local-accelerator-routing/README.md) 的后台监控脚本。新版从 Windows Hosts 中读取指向回环地址的域名，不限于固定的 Steam 域名列表；只有检测到实际加速监听时才写入受控规则。
 
-该脚本目前**仅适配 Windows 版 Clash Verge Rev**；它会在每份订阅覆写的 prepend 顶部临时写入受控的 Steam 直连规则，并在加速服务停止后只删除该受控规则块；不使用 TUN，也不会在后台保留可见的 PowerShell 窗口。Clash Mi、FlClash 等客户端需要另行适配，不能直接使用该脚本。
+该脚本**仅适配 Windows 版 Clash Verge Rev**。它在每份订阅覆写的 prepend 顶部维护加速器进程规则和 Hosts 域名直连规则，保存并恢复原始 `dns.use-system-hosts` 状态；两种加速器同时可用时优先 302。脚本不自动切换 TUN，通过隐藏启动器后台运行。示例默认关闭客户端自动重启和活动连接刷新，这些功能需按说明显式配置。Clash Mi、FlClash 等客户端不能直接使用该脚本。
+
+旧版 [desktop/steam-routing](desktop/steam-routing/README.md) 保留供已有部署查阅；升级请按新版 README 的迁移步骤操作，避免新旧监控同时改写同一份配置。监控程序的更新不随规则提供者的 24 小时刷新自动部署。

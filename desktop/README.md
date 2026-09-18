@@ -11,7 +11,7 @@
 3. 回到“全局扩展覆写配置”，全选编辑器内容，粘贴刚复制的完整内容。
 4. 点击 **保存**，重启 Clash Verge Rev。
 
-此页面只能保留 `profile:` 与 `rule-providers:`；**不要添加顶层 `rules:`**。全局扩展覆写中的 `rules:` 会整体覆盖机场原有规则，导致分流异常。
+本仓库模板只提供 `profile:` 与 `rule-providers:`；**不要添加顶层 `rules:`**。全局扩展覆写中的 `rules:` 会整体覆盖机场原有规则，导致分流异常。若启用下方可选的本地加速监控，它可以额外管理 `dns.use-system-hosts` 并在停用加速后恢复原值。
 
 ## 第 2 部分：为每个订阅配置通用规则覆写
 
@@ -42,16 +42,19 @@
 3. 国内网站在没有机场专属规则命中时，应命中 `shared_cn_domain` 或 `shared_cn_ip`，使用 `DIRECT`。
 4. 广告域名应命中 `shared_ads` 并使用 `REJECT`。
 
-## Steam 本地加速自动切换（可选）
+## 本地加速自动切换（可选）
 
-上述覆写模板不会固定 Steam 的路由。若安装了 Watt 或 Steamcommunity_302，可使用 [steam-routing/README.md](steam-routing/README.md) 中的后台监控。**该监控仅适配 Windows 版 Clash Verge Rev，不能直接用于 Clash Mi 或 FlClash。**
+上述覆写模板不会固定加速域名的路由。若安装了 Watt 或 Steamcommunity_302，可使用 [local-accelerator-routing/README.md](local-accelerator-routing/README.md) 中的后台监控。**该监控仅适配 Windows 版 Clash Verge Rev，不能直接用于 Clash Mi 或 FlClash。**
 
-- 任一加速服务实际运行时，自动在 prepend 顶部写入 Steam 的直连规则，让本地加速器接管。
-- 两者都停止时，自动删除该受控规则块，恢复订阅自己的 Steam 分流。
-- 不需要 TUN；通过隐藏的脚本宿主运行，不会出现常驻 PowerShell 窗口。
+- 任一加速服务实际监听时，按 Windows Hosts 动态生成域名直连规则，并把加速器进程规则放在受控块前面；同时可用时优先 302。
+- 两者都停止时，移除受控规则块并恢复原始 `dns.use-system-hosts` 状态，交回订阅分流。
+- 示例默认不自动重启客户端、不刷新活动连接；修改后的覆写需由客户端重新加载。需要自动处理时，按新版说明配置对应选项。
+- 脚本不自动切换 TUN；通过隐藏的脚本宿主运行，不会出现常驻 PowerShell 窗口。
+- 旧版 Steam 监控用户先按新版说明迁移，不能同时运行两套监控。
 
 ## 更新机制
 
 - 机场节点与机场自带规则：按原订阅自身的更新方式更新。
 - 自建直连、微软直连、国内规则、广告规则：每 24 小时更新一次。
 - 若更改了 `SubscriptionRouting.template.yaml` 的规则逻辑，需要在每个已配置订阅的高级规则编辑器中重新粘贴一次；普通规则数据更新无需重复操作。
+- 本地监控脚本、启动器和测试需要单独更新，不随规则提供者刷新自动下载；私有配置、state、日志和备份保留在本机。
