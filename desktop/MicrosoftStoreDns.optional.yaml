@@ -1,0 +1,9 @@
+# Optional Windows / Clash Verge Rev DNS override; not a complete subscription.
+# Merge into the existing global override; do not replace its other settings.
+# Use only after confirming system DNS resolves Store endpoints to reachable IPs.
+# Keep the existing shared_ms_store -> DIRECT rule.
+# If direct-nameserver is configured, also review direct-nameserver-follow-policy.
+# See README.md: Microsoft Store initialization troubleshooting.
+dns:
+  nameserver-policy:
+    'storeedge.microsoft.com': system

@@ -60,6 +60,8 @@ FlClash 的 URL 导入用于完整机场配置，不能把这份 JS 覆写脚本
 CheckNetIsolation LoopbackExempt -a -n=Microsoft.WindowsStore_8wekyb3d8bbwe
 ```
 
+若回环豁免已存在，商店仍一直转圈并提示“初始化失败”，请按 [Windows 商店 DNS 排障说明](desktop/README.md#微软商店初始化失败可选-dns-修复)检查接口连接。仓库提供 [可选 DNS 覆写片段](desktop/MicrosoftStoreDns.optional.yaml)，仅在确认当前网络的系统 DNS 可用后启用；商店继续使用 `DIRECT`，默认桌面模板和手机端配置不受影响。
+
 ## 自定义规则维护
 
 - 给某个网站直连：在 `rules/direct-domains.yaml` 的 `payload` 中添加 `+.example.com`。
