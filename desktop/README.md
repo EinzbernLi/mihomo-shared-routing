@@ -4,7 +4,7 @@
 
 ## 第 1 部分：配置所有订阅共用的规则提供者
 
-这一步只做一次。它让电脑自动下载本仓库中的微软直连、自定义直连规则，以及国内/广告规则数据。
+这一步只做一次。它让电脑自动下载本仓库中的微软直连、自定义域名与关键词直连规则，以及国内/广告规则数据。
 
 1. 在 Clash Verge Rev 左侧打开 **订阅** 页面，进入 **全局扩展覆写配置**。
 2. 浏览器打开 [Merge.yaml Raw 文件](https://raw.githubusercontent.com/EinzbernLi/mihomo-shared-routing/main/desktop/Merge.yaml)，复制全部内容。
@@ -37,7 +37,7 @@
 
 ## 验证
 
-1. 打开 **连接** 或日志页面，访问动漫共和国；应看到 `dmgh.cc` 使用 `DIRECT`。
+1. 打开 **连接** 或日志页面，访问 `www.skr1.cc` 或 `dmgh2.cc`；应看到 `shared_direct_domains` 使用 `DIRECT`。不在精确列表中但域名仍含 `dmgh` 的请求应命中 `shared_direct_keywords`、使用 `DIRECT`。
 2. 打开微软商店；相关请求应命中 `shared_ms_store` 并使用 `DIRECT`。
 3. 国内网站在没有机场专属规则命中时，应命中 `shared_cn_domain` 或 `shared_cn_ip`，使用 `DIRECT`。
 4. 广告域名应命中 `shared_ads` 并使用 `REJECT`。
@@ -91,7 +91,18 @@ dns:
 ## 更新机制
 
 - 机场节点与机场自带规则：按原订阅自身的更新方式更新。
-- 自建直连、微软直连、国内规则、广告规则：每 24 小时更新一次。
+- 自建域名与关键词直连、微软直连、国内规则、广告规则：每 24 小时更新一次。
 - `MicrosoftStoreDns.optional.yaml` 是按需手动合并的 DNS 配置；规则提供者的 24 小时刷新不会应用或更新它。已有用户需要自行合并并重新加载，已完成本机修复的用户无需重复操作。
 - 若更改了 `SubscriptionRouting.template.yaml` 的规则逻辑，需要在每个已配置订阅的高级规则编辑器中重新粘贴一次；普通规则数据更新无需重复操作。
 - 本地监控脚本、启动器和测试需要单独更新，不随规则提供者刷新自动下载；私有配置、state、日志和备份保留在本机。
+
+## 新增关键词直连的已有用户升级
+
+保留已有配置，不要全选覆盖。首次加入 `shared_direct_keywords` 时：
+
+1. 备份“全局扩展覆写配置”和每份订阅的高级规则。
+2. 从新版 `Merge.yaml` 仅复制 `shared_direct_keywords` 配置块，合并到现有 `rule-providers:` 下；保留原有 DNS、下载方式和其他手动设置，不新增顶层 `rules:`。
+3. 在每份订阅的 **编辑规则 → 高级** 中，在 `prepend:` 的 `RULE-SET,shared_direct_domains,DIRECT` 后添加 `RULE-SET,shared_direct_keywords,DIRECT`，不要修改本地加速器受控块或原有策略组名。
+4. 保存并重新加载，更新这两个共享直连规则集；旧连接可能仍使用原出口，重新打开相关页面后查看新连接。
+
+`dmgh` 会匹配所有域名中含该字符串的请求，包括可能无关的网站。它不能识别完全不含 `dmgh` 的新域名，也不会把不含关键词的第三方视频/CDN 一并设为直连。这种情况仍需补充精确域名；回退时仅移除该关键词引用及提供者，保留其他内容。

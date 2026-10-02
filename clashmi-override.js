@@ -11,6 +11,14 @@ function main(config) {
     path: './ruleset/shared_direct_domains.yaml',
     url: 'https://raw.githubusercontent.com/EinzbernLi/mihomo-shared-routing/main/rules/direct-domains.yaml',
   };
+  providers.shared_direct_keywords = {
+    type: 'http',
+    behavior: 'classical',
+    format: 'yaml',
+    interval: 86400,
+    path: './ruleset/shared_direct_keywords.yaml',
+    url: 'https://raw.githubusercontent.com/EinzbernLi/mihomo-shared-routing/main/rules/direct-keywords.yaml',
+  };
   providers.shared_cn_domain = {
     type: 'http',
     behavior: 'domain',
@@ -41,6 +49,7 @@ function main(config) {
     // Fallback: apply immediately even before the remote custom list refreshes.
     'DOMAIN-SUFFIX,dmgh.cc,DIRECT',
     'RULE-SET,shared_direct_domains,DIRECT',
+    'RULE-SET,shared_direct_keywords,DIRECT',
     'RULE-SET,shared_ads,REJECT',
   ];
   const nationalRules = [

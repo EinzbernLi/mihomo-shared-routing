@@ -5,17 +5,18 @@
 ## 包含什么
 
 - `rules/microsoft-store.yaml`：微软商店、Xbox 授权与下载域名直连
-- `rules/direct-domains.yaml`：个人补充直连域名（`dmgh.cc`、`dmgh1.cc`、`xifanacg.com`，含子域名）
+- `rules/direct-domains.yaml`：个人补充直连域名（`dmgh.cc`、`dmgh1.cc`、`dmgh2.cc`、`xifanacg.com`、`skr1.cc`，含子域名）
+- `rules/direct-keywords.yaml`：域名关键词直连（`dmgh`，用于覆盖仍含该关键词的新域名）
 - MetaCubeX 数据集：中国大陆域名和 IP 直连、广告域名拦截
 - `clashmi-override.js`：Android 的自动覆写脚本
 - `desktop/`：Clash Verge Rev 的电脑端覆写模板
 - 电脑端按 Windows Hosts 动态生成直连规则，供 Watt、Steamcommunity_302 等本地加速工具接管
 
-规则数据每 24 小时更新一次。仓库中的两份自建规则更新后，Android 与已配置的电脑端会在下一次规则提供者更新时获取新版本。
+规则数据每 24 小时更新一次。仓库中的三份自建规则更新后，Android 与已配置的电脑端会在下一次规则提供者更新时获取新版本。
 
 ## 路由顺序
 
-1. 自建直连（微软商店、动漫共和国）
+1. 自建域名与关键词直连、微软商店直连
 2. 广告域名拦截
 3. 机场订阅自带的专属规则和策略组
 4. 中国大陆域名 / IP 直连兜底
@@ -27,14 +28,9 @@
 
 保留机场订阅，不要把本仓库当作机场订阅导入。
 
-1. 打开 **核心设置 → 覆写**，点击右上角 `+`。
-2. 选择 **添加配置链接**，填写：
-   - 备注：`安卓路由共享`
-   - URL：`https://raw.githubusercontent.com/EinzbernLi/mihomo-shared-routing/main/clashmi-override.js`
-   - 类型：`js`
-   - 更新间隔：`1 d`
-   - 追加覆写：选择 **内置-覆写**
-3. 保存后点击云朵图标更新，再断开并重新连接代理。
+1. 打开 [clashmi-override.js Raw 文件](https://raw.githubusercontent.com/EinzbernLi/mihomo-shared-routing/main/clashmi-override.js)，复制完整脚本。
+2. 在 **核心设置 → 覆写** 中新建本地 JS 覆写，将脚本粘贴并保存，再绑定到原机场订阅。
+3. 断开并重新连接代理。首次需要本地粘贴；之后规则数据自动更新，只有脚本逻辑改变才需要重新粘贴。
 
 Clash Mi 的“规则提供者”页面只能添加规则数据，不能指定 `DIRECT` 或 `REJECT` 策略；因此应使用上面的 JS 覆写方式。
 
@@ -65,8 +61,13 @@ CheckNetIsolation LoopbackExempt -a -n=Microsoft.WindowsStore_8wekyb3d8bbwe
 ## 自定义规则维护
 
 - 给某个网站直连：在 `rules/direct-domains.yaml` 的 `payload` 中添加 `+.example.com`。
+- 域名关键词直连：在 `rules/direct-keywords.yaml` 中使用 `DOMAIN-KEYWORD,关键词`，由 `shared_direct_keywords` 指向 `DIRECT`。关键词规则不是域名列表，不能混入 `direct-domains.yaml`。
 - 给新的微软相关域名直连：添加到 `rules/microsoft-store.yaml`，格式为 `DOMAIN,hostname`。
 - 提交到 `main` 分支后，已配置客户端将在下一次更新（最长约 24 小时）加载。
+
+`dmgh` 关键词按主机域名匹配，例如 `dmgh2.cc`、`www.dmgh3.cc`，而不是按网站名称、页面内容或 URL 路径识别。它也会匹配无关的、域名中含 `dmgh` 的网站；若网站完全改名，或图片/视频使用不含该关键词的第三方域名，仍需按实际连接补充规则。此宽泛匹配为明确选择，不应默认对其他网站添加关键词。
+
+已有客户端首次启用关键词提供者需要一次逻辑升级：电脑端合并 `shared_direct_keywords` 提供者，并在每份订阅高级规则中加入 `RULE-SET,shared_direct_keywords,DIRECT`，不要覆盖手动修改；Clash Mi / FlClash 重新粘贴完整新版脚本一次。之后仅修改关键词数据或精确域名数据，不需要再粘贴。电脑端升级细节见 [desktop/README.md](desktop/README.md#新增关键词直连的已有用户升级)。
 
 修改后应先检查 YAML 缩进与格式。规则文件写错会导致对应规则提供者无法更新，但不会包含或暴露订阅信息。
 

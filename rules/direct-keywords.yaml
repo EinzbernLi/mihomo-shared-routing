@@ -1,0 +1,4 @@
+# Classical keyword rules; intentionally broader than exact domain suffixes.
+# Matches any hostname containing dmgh, not a website's title or URL path.
+payload:
+  - DOMAIN-KEYWORD,dmgh
